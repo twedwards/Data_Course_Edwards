@@ -1,0 +1,10 @@
+1.
+#find . -type f -name m* -exec wc -l {} \;
+2.
+#find . -type f -name m* -exec wc -l {} \; > ../../../../../Data_Course_Edwards/Assignments/Assignment_2/m_lines.txt
+3.
+#grep Waste_Water* BioLog_Plate_Data.csv | cut -d , -f 5 | sort | uniq > ../../Data_Course_Edwards/Assignments/Assignment_2/unique_C-substrates.txt
+4.
+#find . -type f -name * -exec wc -l {} \; | sort | tail
+5.
+#find . -name *.txt -exec bash ../scripts/sum_lines.sh {} \; > ../../../../Data_Course_Edwards/Assignments/Assignment_2/file_sums.txt
