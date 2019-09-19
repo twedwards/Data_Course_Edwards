@@ -1,4 +1,6 @@
 library(ggplot2)
+library(plyr)
+
 
 
 DNA = read.csv("DNA_Conc_by_Extraction_Date.csv")
@@ -41,9 +43,13 @@ for(i in unique(DNA$Year_Collected)){
   x1=x1+1
 }
 
+as.factor(Ben_mean)
+
+
+
 plot(Ben_mean, col="red", yaxt='n', ann=FALSE) 
 par(new=TRUE)
-plot(Katy_mean, col="green", yaxt='n', ylab="Ben and Katy's Data collections", xlab="Year")
+plot(Katy_mean, col="green", yaxt='n', ylab="Ben and Katy's Data collections", xlab="Year",sub="2000-2012")
 
 
 downstairs <- DNA[DNA$Lab == "Downstairs",]
