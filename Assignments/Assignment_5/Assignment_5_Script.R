@@ -17,14 +17,25 @@ iris$Ratio <- with(iris, Petal.Width / Sepal.Width)
 ggplot(iris, aes(x=Species, y=Ratio, fill=Species)) +
   geom_boxplot() +
   labs(title = "Sepal- to Petal-Width Ratio", x="Species", y="Ratio of Sepal Width to Petal Width", subtitle = "for three iris species")
+
 ggsave("./iris_fig3.png")
 
-iris$Deviance <- with(iris, Sepal.Length - mean(Sepal.Length))
+meansepal=mean(iris$Sepal.Length)
 
-ggplot(iris, aes(x=Deviance, y=Deviance,fill=Species)) +
-  geom_bar(position = "dodge", stat = "identity") +
-  coord_flip() + 
-  theme(axis.text.y.left = element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank())
+dev = iris$Sepal.Length - mean(iris$Sepal.Length)
+
+iris$dev = dev
+
+iris$id <- factor(1:nrow(iris), levels = 1:nrow(iris))
+
+ggplot(iris, aes(x=reorder(id, dev), y=dev,fill=Species)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme(axis.text.y.left = element_blank(), axis.title.y = element_blank(), axis.ticks = element_blank()) +
+  labs(title = "Sepal Length Deviance from the Mean of all Observations", 
+       caption = "Note: Deviance = Sepal.Length - mean(Sepal.Length)", y = "Deviance from the Mean")
+ggsave("../Assignment_5/iris_fig4.png")
+
 
 
 
