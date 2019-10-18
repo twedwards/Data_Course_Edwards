@@ -1,0 +1,57 @@
+
+Call:
+lm(formula = Diversity ~ CO2_Concentration, data = atmosphere)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-905.0 -320.1 -111.8  144.2 5493.4 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       -12675.560   1482.246  -8.552 6.61e-16 ***
+CO2_Concentration     35.382      3.888   9.100  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 610.7 on 296 degrees of freedom
+Multiple R-squared:  0.2186,	Adjusted R-squared:  0.216 
+F-statistic: 82.82 on 1 and 296 DF,  p-value: < 2.2e-16
+
+
+Call:
+lm(formula = Diversity ~ Precip, data = atmosphere)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-513.35 -114.48  -46.87   85.67  991.32 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  101.109     17.951   5.633 4.13e-08 ***
+Precip       215.317      4.003  53.789  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 210.5 on 296 degrees of freedom
+Multiple R-squared:  0.9072,	Adjusted R-squared:  0.9069 
+F-statistic:  2893 on 1 and 296 DF,  p-value: < 2.2e-16
+
+
+Call:
+lm(formula = Diversity ~ Aerosol_Density, data = atmosphere)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1456.4  -387.8    30.4   304.4  3382.5 
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)      59.2454    64.6477   0.916     0.36    
+Aerosol_Density   2.6116     0.1962  13.314   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 546.4 on 296 degrees of freedom
+Multiple R-squared:  0.3746,	Adjusted R-squared:  0.3724 
+F-statistic: 177.3 on 1 and 296 DF,  p-value: < 2.2e-16
+
