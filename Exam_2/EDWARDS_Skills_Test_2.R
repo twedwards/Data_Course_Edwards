@@ -83,10 +83,14 @@ ggplot(hyp_data, aes(x=Precip, y=)) +
 library(caret)
 
 set.seed(123)
-trainingsamples <- createDataPartition(atmosphere$Diversity,times = 2, p=0.5,list=TRUE)  
+trainingsamples <- createDataPartition(atmosphere$Diversity, p=0.5,list=FALSE)  
 
-train <- atmosphere[trainingsamples$Resample1,]
-test <- atmosphere[-trainingsamples$Resample1,]
+train <- atmosphere[trainingsamples,]
+test <- atmosphere[-trainingsamples,]
+
+
+
+
 
 
 

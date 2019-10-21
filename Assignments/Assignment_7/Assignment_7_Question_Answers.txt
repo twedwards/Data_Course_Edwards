@@ -1,0 +1,5 @@
+1. The strongest correlation between a particular religion and the proportion of the Non-religious people is the LDS church.
+2. The direction of this correlation is negative, meaning that the more Non-religious people, the fewer LDS people.
+3. The next strongest correlation is the Episcopal Church.
+4. The direction of that correlation is positive, meaning that the more Episcopal members, the fewer Non-religious people.
+5.The first relationship essentially shows that if someone isn't LDS, they just aren't religious at all. However, the second shows that the more non-religious people there are, the more Episcopal churchmembers are there.
