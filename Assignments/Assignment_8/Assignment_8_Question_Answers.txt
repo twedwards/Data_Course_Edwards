@@ -1,0 +1,2 @@
+#1. Mod 2 and 3 were both scientifically insignificant. They are insignificant because they're p-value was far above .05
+#2. All were linear relationships
