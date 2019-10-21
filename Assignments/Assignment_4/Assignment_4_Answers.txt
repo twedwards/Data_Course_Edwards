@@ -1,0 +1,10 @@
+1. read.csv() automatically reads in .csv files with the default delimiter being a comma (.csv stands for comma separated values). Also, read.csv will 
+take the values and automatically put them in their respective columns and rows. 
+2. read.csv2() is different from read.csv because it understands that a comma represents a decimal point, and a semi-colon as a field seperator.
+3. read.csv2() exists because there are regions in the world that use commas in place of a decimal point, and a semi-colon as a field seperator.
+4. In order to have read.csv read in that column of the file as a "character" class, you can use the colClasses() parameter to specify which column you want to change, 
+and what class you want to change it to. I changed the command line to the following: df = read.csv("../../Data/landdata-states.csv", colClasses = c("State" = "character"))
+5. summary(df$Home.Value)
+6. Home.Value
+7. By adding (...col=df$region) to the plotting code for the above plotting code separates the plotted points by region and shows the different regions in different colors
+on the plotted graph. 
