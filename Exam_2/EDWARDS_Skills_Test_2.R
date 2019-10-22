@@ -1,6 +1,9 @@
 library(dplyr)
 library(ggplot2)
 library(modelr)
+library(tidyverse)
+
+#I. Simple Tidying Exercise
 
 #1.  Read in salaries.csv (needs some tidying)
 #This is faculty salary information from 1995 - Split up by university, state, faculty rank, and university tier
@@ -48,6 +51,8 @@ ggplot(clean_salaries, aes(x=Tier, y=Salary, fill=Rank)) +
 #4.  Export this delightful boxplot to a file named "LASTNAME_exam2_plot1.jpeg" (10 points)
 
 ggsave("../Exam_2/EDWARDS_exam2_plot1.jpeg")
+
+#II. Linear Modeling and Predictions
 
 #1.  Read in atmosphere.csv (pretty clean data set)
 #These are observations of fungal diversity (number of different species) found in air samples along a time series
@@ -131,9 +136,20 @@ sink()
 #8.  Add these hypothetical predicted values (from hypothetical data - Part II, Step 6) to a plot of actual data 
 #and differentiate them by color. (10 bonus points possible for a pretty graph)
 
-ggplot(hyp_data, aes(x=Precip, y=)) +
-  geom_point() + geom_point(aes(y=hyp_data$pred), color="Red", alpha = .40) +
-  facet_wrap(~model)
+?predict()
+predict(mod2, newdata = full_hyp) 
+full_hyp$Diversity <- predict(mod2,newdata = full_hyp)
+
+df3 <- atmosphere %>% 
+  select(Diversity,Precip) %>%
+  rbind(full_hyp) %>%
+  mutate(Source = c(rep("Observed",894),rep("Predicted",30)))
+
+
+ggplot(full_hyp, aes(x=Precip, y=pred)) +
+  geom_point() + geom_point(aes(y=atmosphere$Diversity))
+
+####????????????????????
 
 #9.  Split the atmosphere.csv data into training and testing sets, randomly. Train your single best model on 50% of the data and 
 #test it on the remaining 50% of the data. Find some way to show how well it fits the data.
@@ -147,6 +163,14 @@ trainingsamples <- createDataPartition(atmosphere$Diversity, p=0.5,list=FALSE)
 train <- atmosphere[trainingsamples,]
 test <- atmosphere[-trainingsamples,]
 
+mod5 <- lm(data = train,Diversity ~ poly(Precip,3))
+
+df5<-add_predictions(test,mod5)
+
+summary(mod5)
+mean(abs(residuals(mod5)))
+
+#Adjusted R^2 value = .9052 therefore fit is pretty good, with less than 10% inaccuracy.
 
 
 
