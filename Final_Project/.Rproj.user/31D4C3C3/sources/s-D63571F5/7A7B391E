@@ -1,0 +1,27 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571842060126.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "0|25|65|0|\n66|27|95|0|\n96|25|149|0|\n150|35|155|0|\n156|55|170|0|\n",
+    "hash" : "0",
+    "id" : "7A7B391E",
+    "lastKnownWriteTime" : 1574355289,
+    "last_content_update" : 1574355327848,
+    "path" : "~/Desktop/Data_Course_Edwards/Final_Project/Final_Project_Script_Cleaning.R",
+    "project_path" : "Final_Project_Script_Cleaning.R",
+    "properties" : {
+        "cursorPosition" : "170,0",
+        "docOutlineVisible" : "1",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
