@@ -1,0 +1,220 @@
+---
+title: "Exam 3"
+author: "Tyler Edwards"
+date: "12/1/2019"
+output: html_document
+---
+```{r echo=FALSE, include=FALSE}
+library(rmarkdown)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(modelr)
+library(tidyverse)
+library(plotly)
+library(daff)
+```
+
+This is the RMarkdown for Exam 3. Below, we will analyze the BioLogData.
+
+## First, Let's take a look at our data
+
+```{r }
+df <- read.csv("./BioLogData_Exam3.csv", sep = "|")
+head(df)
+```
+
+## Here's a breakdown of the columns in the BioLogData data set:
+
+| Column ID  |  Description                                                                              |
+|------------|-------------------------------------------------------------------------------------------|
+|  **Sample.ID** |  The location the sample was taken from. There are 2 water samples and 2 soil samples.    |
+| **Rep**        |  The experimental replicate. 3 replicates for each combination of experimental variables. |
+| **Well**       | The well number on the BioLog plate.                                                      |
+| **Dilution**   | The dilution factor of the sample.                                                        |
+| **Substrate**  | The name of the carbon source in that well.  "Water" is the negative control.                                             |
+| **Hr_24**      | The light absorbance value after 24 hours of incubation.                                  |
+| **Hr_48**      | The light absorbance value after 48 hours of incubation.                                  |
+| **Hr_144**     | The light absorbance value after 144 hours of incubation.                                 |
+
+___
+
+* It looks like we need to do some re-arranging of some columns. We'll do some subsetting and tidying in a bit.
+
+* What are the classes of each column? 
+
+```{r }
+sapply(df, class)
+```
+* Everything looks good so far. Let's take a quick look at summaries for each column
+```{r}
+summary(df)
+
+```
+
+
+
+## Which sample locations are functionally different from each other in terms of what C-substrates they can utilize?
+
+* What are the different sample locations?
+```{r echo=FALSE}
+unique(df$Sample.ID)
+```
+
+* How many and which substrates are we working with?
+```{r}
+unique(df$Substrate)
+```
+
+* Let's graph the individual sample locations to see what substrates are used in the different conditions
+
+```{r, echo=FALSE, eval=TRUE, results='hide'}
+creek <- subset(x = df, Sample.ID == "Clear_Creek")
+as.data.frame(creek)
+creek <- pivot_longer(data = creek, cols= c(Hr_144, Hr_48, Hr_24),
+                  	names_to = "inc_period", values_to = "values")
+
+soil1 <- subset(x = df, Sample.ID == "Soil_1")
+as.data.frame(soil1)
+soil1 <- pivot_longer(data = soil1, cols= c(Hr_144, Hr_48, Hr_24),
+                  	names_to = "inc_period", values_to = "values")
+
+soil2 <- subset(x = df, Sample.ID == "Soil_2")
+as.data.frame(soil2)
+soil2 <- pivot_longer(data = soil2, cols= c(Hr_144, Hr_48, Hr_24),
+                  	names_to = "inc_period", values_to = "values")
+
+wastewater <- subset(x = df, Sample.ID == "Waste_Water")
+as.data.frame(wastewater)
+wastewater <- pivot_longer(data = wastewater, cols= c(Hr_144, Hr_48, Hr_24),
+                  	names_to = "inc_period", values_to = "values")
+```
+
+
+```{r, echo=FALSE, eval=TRUE}
+plot1 <- ggplot(data=creek, aes(x = Substrate, y= values)) +
+  geom_point() + geom_smooth(method = "lm")+
+  labs(title= "Clear Creek Values",
+   	x="Substrate", y="Light absorbance value")+
+  theme(axis.text.x=element_text(angle=90,hjust=1))
+ggplotly(plot1)
+
+
+plot2 <- ggplot(data=soil1, aes(x = Substrate, y= values)) +
+  geom_point() + geom_smooth(method = "lm")+
+  labs(title= "Soil 1 Values",x="Substrate", y="Light absorbance value")+
+  theme(axis.text.x=element_text(angle=90,hjust=1))
+ggplotly(plot2)
+
+plot3 <- ggplot(data=soil2, aes(x = Substrate, y= values)) +
+  geom_point() + geom_smooth(method = "lm")+
+  labs(title= "Soil 2 Values",
+   	x="Substrate", y="Light absorbance value")+
+  theme(axis.text.x=element_text(angle=90,hjust=1))
+ggplotly(plot3)
+
+plot4 <- ggplot(data=wastewater, aes(x = Substrate, y= values)) +
+  geom_point() + geom_smooth(method = "lm")+
+  labs(title= "Waste Water Values",
+   	x="Substrate", y="Light absorbance value")+
+  theme(axis.text.x=element_text(angle=90,hjust=1))
+ggplotly(plot4)
+```
+
+* So it looks like there is quite a bit of variation between the substrates used by the different Sample Locations. It seems also seems to be affected by the amount of light absorption
+
+## Are Soil and Water samples significantly different overall (as in, overall diversity of usable carbon sources)? What about for individual carbon substrates?
+
+* In order to see the differences between the substrates' effects, and the difference between Soil and Water samples, we'll want to get that previously mentioned tidying done now. It'll be really easy now that we've already subsetted the data.
+
+```{r, echo=TRUE}
+creek <- creek %>% 
+  mutate(status="water")
+wastewater <- wastewater %>% 
+  mutate(status="water")
+soil1 <- soil1 %>%
+  mutate(status="soil")
+soil2 <- soil2 %>%
+  mutate(status="soil")
+
+df <- rbind(creek, wastewater, soil1, soil2)
+
+```
+
+
+
+* Now that we've got the columns in the write places, Let's try creating a model to see if we can view the differences between Soil and Water, and also for the individual substrates.
+
+```{r}
+mod1 <- aov(data = df, values ~ Substrate * status)
+summary(mod1)
+```
+
+
+* Now that we have the model, lets add predictions to our data frame to see how well our model fits the actual data, and how well it predicts the relationship of Substrate and Status on the values.
+
+```{r}
+df <- add_predictions(data = df, mod1, var="pred")
+
+ggplot(df, aes(x=Substrate, y=values)) +
+  geom_point() + facet_wrap(~status) +
+  geom_point(aes(y=pred), color="red") +
+  theme(axis.text.x = element_text(angle=90), axis.title.x = element_text(vjust=.80)) +
+  labs(x="Carbon Substrates",y="Values", title = "Light Absorption Values per Substrate in Water and Soil Samples",
+       caption = "Red values indicated Predicted values, while Black values are the actual data")
+  
+
+```
+
+* The model appears to be predicting pretty well. It doesn't over-fit the data, and produces p-values for the various substrates that indicate strong statistical significance. Judging by the various p-values, there are significant differences between the Soil and Water based samples, as well as between the individual substrates.
+
+## If there are differences between samples, which C-substrates are driving those differences?
+
+* There are differences. The C-Substrates that are driving the differences are can be determined by looking at the model summary above. Those with the higher p-values are driving the difference because they are used the most in that particular environment (water vs. soil)
+
+## Does the dilution factor change any of these answers?
+
+* Now that we know that the there is a significant difference between Soil and Water Samples, as well as Substrates individually, lets form some more models to see if Dilution makes any difference. Once we have a few models, we'll look at a couple simple plots, and model summaries to see if the relationships change because of Dilution.
+
+```{r, echo=TRUE}
+mod2 <- aov(data=creek, values ~ Substrate * Dilution)
+plot(creek$values ~ creek$Dilution)
+summary(mod2)
+
+mod3 <- aov(data=wastewater, values ~ Substrate * Dilution)
+plot(wastewater$values ~ wastewater$Dilution)
+summary(mod3)
+
+mod4 <- aov(data=soil1, values ~ Substrate * Dilution)
+plot(soil1$values ~ soil1$Dilution)
+summary(mod4)
+
+mod5 <- aov(data=soil2, values ~ Substrate * Dilution)
+plot(soil2$values ~ soil2$Dilution)
+summary(mod5)
+
+```
+
+* As we factor in Dilution, we see that the relationships change drastically. As far as the water based sample are concerned, the statistical significance of the difference is unchanged. However, when we look at the differences in the soil based samples, the significance disappears as the p-values rise to over .05.
+
+## Do the control samples indicate any contamination?
+
+* Luckily, there is no contamination. The negative control samples for this experiment were all water, and if we look through all of the values for water they are all zero which indicates no contamination.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
