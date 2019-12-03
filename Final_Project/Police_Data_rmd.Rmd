@@ -34,6 +34,14 @@ ___
 * Now that we sort of know what is in this data set, lets start some analysis. Let's start by forming a few models.
 
 ```{r}
+mod1 <- glm(data=clean, VehicleSearchConducted ~ DriverRace + Age, family="binomial")
+clean <- add_predictions(clean,mod1,type="response",var="ProbOfSearchmod1")
+
+mod2 <- glm(data=clean, VehicleSearchConducted ~ DriverRace + AgencyCode, family="binomial")
+clean <- add_predictions(clean, mod2, type="response",var="ProbOfSearchmod2")
+
+mod3 <- glm(data=clean, VehicleContrabandFound ~ DriverRace, family = "binomial")
+clean <- add_predictions(data=clean,mod3, type="response", var="ProbOfContrbandmod3")
 
 ```
 
