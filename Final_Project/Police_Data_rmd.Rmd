@@ -6,7 +6,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 
-cleaned <- read.csv("./Cleaned_Police_Data.csv")
+clean <- read.csv("./Cleaned_Police_Data.csv")
 
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -16,11 +16,11 @@ library(modelr)
 
 * Throughout this analysis, we will be trying to see if there are any trends that appear from the data. Mostly, we will be seeing if there are any trends based on Race, Location, Age, and a few other variables.
 
-## Before we start analyzing, let's take a look at the columns we'll be using to analyze the data.
+### Before we start analyzing, let's take a look at the columns we'll be using to analyze the data.
 
 | Column ID  |  Description                                                                              |
 |------------|-------------------------------------------------------------------------------------------|
-|  **AgencyName** |  The police department that processed the traffic stop information                       |
+|  **AgencyName** |  The Categorized departments that processed the traffic stop.                     |
 | **AgencyCode**  |  The code assigned to each Police Department. |
 | **DriversYearofBirth**       | Pretty self explanatory               |
 | **DriverSex**   | Also pretty self explanatory                                                        |
@@ -31,19 +31,106 @@ library(modelr)
 
 ___
 
-* Now that we sort of know what is in this data set, lets start some analysis. Let's start by forming a few models.
+### Now that we sort of know what is in this data set, lets start some analysis.
 
-```{r}
+
+* The first thing that I want to know is what effect Driver Race has on the probability of a search being conducted. That being said, let's see what a plot would look like that is based on the following model.
+
+``` {r}
 mod1 <- glm(data=clean, VehicleSearchConducted ~ DriverRace + Age, family="binomial")
 clean <- add_predictions(clean,mod1,type="response",var="ProbOfSearchmod1")
 
-mod2 <- glm(data=clean, VehicleSearchConducted ~ DriverRace + AgencyCode, family="binomial")
-clean <- add_predictions(clean, mod2, type="response",var="ProbOfSearchmod2")
+plot1 <- ggplot(clean, aes(x=Age, y=ProbOfSearchmod1)) +
+  geom_point() + facet_wrap(~DriverRace)+
+  labs(title = "Vehicle Search Probablity by Race and Age", y="Probability of Vehicle Search")
 
-mod3 <- glm(data=clean, VehicleContrabandFound ~ DriverRace, family = "binomial")
-clean <- add_predictions(data=clean,mod3, type="response", var="ProbOfContrbandmod3")
+plot1
+
 
 ```
+
+* So far it seems that certain Driver Races has a significant effect on the Probability of a search being conducted. Also, Age is a significant predictor of probability. However, we still need to take a look at the model to see if our assumptions are actually correct. 
+
+
+```{r}
+summary(mod1)
+```
+
+* Just by looking at the P-values for each race, it seems that every race except for White is a significant deciding factor in  whether a search is conducted. Age is also a significant factor.
+
+
+*Now I want to know if there are any differences in the trends based on the added effects of the varying Agencies. Let's take a look.
+
+```{r}
+mod2 <- glm(data=clean, VehicleSearchConducted ~ DriverRace + Age + AgencyName, family="binomial")
+clean <- add_predictions(clean, mod2, type="response",var="ProbOfSearchmod2")
+
+plot2 <- ggplot(clean, aes(x=Age, y=ProbOfSearchmod2, color=AgencyName)) +
+  geom_point() + facet_wrap(~DriverRace)+
+  labs(title = "Vehicle Search Probability by Race, Age, and Agency", y="Probability of Vehicle Search")
+
+plot2
+
+```
+
+* Now it seems that the Agencies have a significant effect on the probabilities! Let's check the model again.
+
+```{r}
+summary(mod2)
+```
+
+* Again, Almost all races are deciding factors. However, this time, the graph shows some different info with the Agencies showing some new connections. It seems that the "Other" Agencies have the highest probability of searching vehicles belonging to peole of the Black, Native, Hispanic, and White Races.
+  * Although we are seeing this trend, we don't have the information on population densities that could possibly explain these trends further. 
+
+
+### Next, lets try to find some trends in Contraband found and Drugs found during searches.
+
+* Like the last round of models, let's first look at how Driver Race and Age affect the probability of Contraband being found during a vehicle search. We'll look at a plot first.
+
+```{r}
+mod3 <- glm(data=clean, VehicleContrabandFound ~ DriverRace + Age,family="binomial")
+clean <- add_predictions(data=clean,mod3, type="response", var="ProbOfContramod3")
+
+plot3 <- ggplot(clean, aes(x=Age, y=ProbOfContramod3))+
+  geom_point() + facet_wrap(~DriverRace) + 
+  labs(title = "Contraband Found by Race and Age", y = "Probability of Contraband Found")
+
+plot3
+
+```
+
+*As expected, the Age and Race seem be significant factors. Let's check the model.
+
+
+```{r}
+summary(mod3)
+```
+
+*This time, there are fewer races that seem to be significant factors.
+
+*Next, let's factor in the Agencies again to see what results we see.
+
+```{r}
+mod4 <- glm(data = clean, VehicleContrabandFound ~ DriverRace + Age + AgencyName, family="binomial")
+clean <- add_predictions(data = clean,mod4,type="response", var="ProbOfContramod4")
+
+plot4 <- ggplot(clean, aes(x=Age, y=ProbOfContramod4, color=AgencyName))+
+  geom_point() + facet_wrap(~DriverRace) + 
+  labs(title = "Contraband Found by Race, Age, and Agency", y = "Probability of Contraband Found") 
+
+plot4
+
+```
+
+* There are a couple of remarkable trends going on this time. It seems that there is a significant increase in probability  of contraband found during searches conducted by University, County, and College. Let's check the model.
+
+```{r}
+summary(mod4)
+```
+
+* As suspected, the University, College, and County Agencies have a statistically significant effect on the probability of finding contraband. The Forest and Municipal agencies have a significant effect as well. 
+  * Of course, Race still factors in significantly in this case as well. However, there is quite the change in the races that are significant. This time, it is limited to Black, Hispanic, and Native. That being said, it is still not super solid information because we don't have the population density information.
+
 
 
 

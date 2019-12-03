@@ -156,7 +156,23 @@ for(column in logical_cols){
 
 df <- df %>% 
   mutate(Age = 2017 - DriversYearofBirth)
+# Lastly, we need to change the AgencyNames to something simpler to be able to use them for Analysis ####
+df$AgencyName <- as.character(clean$AgencyName)
+df$AgencyName
 
+policerows = grep("POLICE",df$AgencyName)
+forestrows = grep("FOREST",df[policerows,"AgencyName"])
+universityrows = grep("UNIVERSITY", df$AgencyName)
+collegerows = grep("COLLEGE", df$AgencyName)
+countyrows = grep("SHERIFF", df$AgencyName)
+otherrows = grep("METROPOLITAN|TERMINAL|TRI-COUNTY",df$AgencyName)
+
+df$AgencyName[policerows] <- "Municipal"
+df$AgencyName[collegerows] <- "College"
+df$AgencyName[forestrows] <- "Forest"
+df$AgencyName[universityrows] <- "University"
+df$AgencyName[countyrows] <- "County"
+df$AgencyName[otherrows] <- "Other"
 
 # write the data tables to csv files to begin analysis ####
 
