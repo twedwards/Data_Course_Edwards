@@ -1,0 +1,59 @@
+---
+title: "Analysis of Illinois Traffic Stops"
+author: Tyler W Edwards
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+cleaned <- read.csv("./Cleaned_Police_Data.csv")
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(modelr)
+
+```
+
+* Throughout this analysis, we will be trying to see if there are any trends that appear from the data. Mostly, we will be seeing if there are any trends based on Race, Location, Age, and a few other variables.
+
+## Before we start analyzing, let's take a look at the columns we'll be using to analyze the data.
+
+| Column ID  |  Description                                                                              |
+|------------|-------------------------------------------------------------------------------------------|
+|  **AgencyName** |  The police department that processed the traffic stop information                       |
+| **AgencyCode**  |  The code assigned to each Police Department. |
+| **DriversYearofBirth**       | Pretty self explanatory               |
+| **DriverSex**   | Also pretty self explanatory                                                        |
+| **DriverRace**  | The races of the people who were stopped. (White, Black, Asian, Native, Polynesian, and Hispanic )                                             |
+| **VehicleSearchConducted**      | Whether a vehicle search was conducted or not.                                  |
+| **VehicleContrabandFound**      | Whether contraband was found in the vehicle or not                                  |
+| **VehicleDrugsFound**     | Whether Drugs were found in the vehicle or not                                |
+
+___
+
+* Now that we sort of know what is in this data set, lets start some analysis. Let's start by forming a few models.
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
