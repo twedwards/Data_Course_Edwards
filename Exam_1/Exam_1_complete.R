@@ -111,6 +111,8 @@ max.row <- which(ben_dat$Ben_Mean == max(ben_dat$Ben_Mean))
 
 ben_dat[max.row,]
 
+write.csv(ben_dat, file = "./Ben_Average_Conc.csv")
+
 
 
 
