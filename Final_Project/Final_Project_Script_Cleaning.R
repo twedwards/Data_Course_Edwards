@@ -65,8 +65,12 @@ df = readr::read_delim("./Illinois_2017_Dataset/Illinois_Subset.txt",delim = "~"
 levels(df$DriverSex)
 
 # change driver sex to M/F ####
-df$DriverSex <-  plyr::mapvalues(df$DriverSex,from = c(2,1), to = c("Female","Male"))
-
+df$DriverSex <-  plyr::mapvalues(df$DriverSex,from = c(2,1,2.00,1.00), to = c("Female","Male","Female","Male"))
+df$DriverSex <-  plyr::mapvalues(df$DriverSex,from = c(2.00,1.00), to = c("Female","Male"))
+df[df$DriverSex == "1.00",] <- "Male"
+df[df$DriverSex == "2.00",] <- "Female"
+summary(df$DriverSex)
+levels(df$DriverSex)
 levels(df$DriverRace) 
 
 df$DriverRace <- plyr::mapvalues(x=df$DriverRace, from = levels(df$DriverRace),
@@ -157,6 +161,12 @@ df <- df %>%
 # write the data tables to csv files to begin analysis ####
 
 write.csv(df, "../Final_Project/Cleaned_Police_Data.csv")
+
+
+
+
+
+
 
 
 
