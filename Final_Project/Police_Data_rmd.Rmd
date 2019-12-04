@@ -130,10 +130,31 @@ summary(mod4)
 
 * As suspected, the University, College, and County Agencies have a statistically significant effect on the probability of finding contraband. The Forest and Municipal agencies have a significant effect as well. 
   * Of course, Race still factors in significantly in this case as well. However, there is quite the change in the races that are significant. This time, it is limited to Black, Hispanic, and Native. That being said, it is still not super solid information because we don't have the population density information.
+  
+### Lastly, I want to see if there are any trends in drugs being found.
 
+* Let's just cut straight to the chase and run a model to determine the probability of drugs being found as influenced by Race, Age, and Agency.
 
+``` {r}
+mod5 <- glm(data = clean, VehicleDrugsFound ~ (DriverRace * AgencyName) + Age, family = "binomial")
+clean <- add_predictions(data = clean,mod5,type="response", var="ProbOfDrugsmod5")
 
+plot5 <- ggplot(clean, aes(x=Age, y=ProbOfDrugsmod5, color=AgencyName)) +
+  geom_point() + facet_wrap(~DriverRace) + 
+  labs(title = "Drugs Found by Race, Age, and Agency", y = "Probability of Drugs Found") 
 
+plot5
+
+```
+
+* It seems that there is a strong correlation between a few races, and the "Other" Agencies. Let's see what we can find in the model.
+
+```{r}
+summary(mod5)
+
+```
+
+* It looks like a few of the Agencies are good predictors to whether there will be drugs or not, as well as a few of the
 
 
 
