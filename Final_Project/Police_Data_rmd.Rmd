@@ -4,7 +4,7 @@ author: Tyler W Edwards
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE}
 
 clean <- read.csv("./Cleaned_Police_Data.csv")
 
@@ -13,6 +13,40 @@ library(tidyverse)
 library(modelr)
 
 ```
+
+* The Dataset that we will be looking at in this report is a record of traffic stops carried out by various law enforement agencies in the state of Illinois during the year 2017. 
+  * Let's start by seeing what information the data can show us.
+  
+```{r}
+
+ggplot(clean, aes(x=AgencyName, fill=DriverRace)) +
+  geom_histogram(stat = "count") + labs(title = "Amount of Stops in 2017 by Agency and Race",
+                                        x="Agencies", y="Amount of Stops")
+
+```
+
+* It looks like the Municipal agencies make the vast majority of stops by far. Let's also see what the stops per day looks like.
+
+```{r}
+ggplot(clean, aes(x=AgencyName)) +
+  geom_histogram(stat="count") + facet_wrap(~StopWeekday)+
+  theme(axis.text.x = element_text(angle = 90))
+
+```
+
+* It looks like we've got some good variation that we can look at with this data. Let's also take a look at amount of stops conducted by Agency.
+
+
+```{r}
+
+ggplot(clean, aes(x=VehicleSearchConducted)) +
+  geom_histogram(stat="count") + facet_wrap(~AgencyName) +
+  labs(title = "Vehicle Searches Conducted by Agency", x="Search Conducted", y="Amount of Stops")
+
+```
+
+* So far it looks like the Municipal departments have the most data, and they're followed by County, Forest, and University departments. Now, let's start analyzing the data to see if we can find any trends in the data.
+
 
 * Throughout this analysis, we will be trying to see if there are any trends that appear from the data. Mostly, we will be seeing if there are any trends based on Race, Location, Age, and a few other variables.
 
@@ -30,6 +64,8 @@ library(modelr)
 | **VehicleDrugsFound**     | Whether Drugs were found in the vehicle or not                                |
 
 ___
+
+* It is also important to note that the Agency Names have been changed to fit into categories; these categories are Municipal, University, College, Forest, County, and Other.
 
 ### Now that we sort of know what is in this data set, lets start some analysis.
 
@@ -154,7 +190,20 @@ summary(mod5)
 
 ```
 
-* It looks like a few of the Agencies are good predictors to whether there will be drugs or not, as well as a few of the
+* It appears that the statistcal significance is a bit more confined this time. It looks like County and Municipal departments have a significant chance of finding drugs in the black demographic, as well as the Forest departments finding drugs during searches of the white demographic.
+
+
+## Discussion
+
+* First of all, there are some strong trends in our models that are based on race and age. Also, those trends stayed statistically significant when we factored the in Agencies who made the stops.
+
+* Based on the models we ran in this analysis, the races who were more likely to be searched during traffic stops were Native American, Black, Hispanic, and Polynesian. 
+
+* Those who were more likely to have contraband were the same as those searched except the Polynesian community wasn't significant in this case.
+
+* The probability of finding drugs during a search was also significant in the White and Black demographic, but this was also influenced by the different Agencies who made the stop. 
+
+*Lastly, there is a pretty big problem with the majority of these models. Even if we find significance in the deciding factors for each model, because they all depend on the driver's race, we need to know the population density of each race in order to really see if the significance would still hold up; we'll need more data for future analyses.
 
 
 

@@ -156,6 +156,13 @@ for(column in logical_cols){
 
 df <- df %>% 
   mutate(Age = 2017 - DriversYearofBirth)
+
+# change the date column to POSIX.CT format, and add weekday column
+
+df$DateOfStop <- as.POSIXct(df$DateOfStop)
+df$StopWeekday = strftime(df$DateOfStop,'%A')
+
+
 # Lastly, we need to change the AgencyNames to something simpler to be able to use them for Analysis ####
 df$AgencyName <- as.character(clean$AgencyName)
 df$AgencyName
