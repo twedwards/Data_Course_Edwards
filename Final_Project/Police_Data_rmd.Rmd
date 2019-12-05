@@ -17,7 +17,7 @@ library(modelr)
 * The Dataset that we will be looking at in this report is a record of traffic stops carried out by various law enforement agencies in the state of Illinois during the year 2017. 
   * Let's start by seeing what information the data can show us.
   
-```{r}
+```{r, warning = FALSE}
 
 ggplot(clean, aes(x=AgencyName, fill=DriverRace)) +
   geom_histogram(stat = "count") + labs(title = "Amount of Stops in 2017 by Agency and Race",
@@ -27,7 +27,7 @@ ggplot(clean, aes(x=AgencyName, fill=DriverRace)) +
 
 * It looks like the Municipal agencies make the vast majority of stops by far. Let's also see what the stops per day looks like.
 
-```{r}
+```{r, warning=FALSE}
 ggplot(clean, aes(x=AgencyName)) +
   geom_histogram(stat="count") + facet_wrap(~StopWeekday)+
   theme(axis.text.x = element_text(angle = 90))
@@ -37,7 +37,7 @@ ggplot(clean, aes(x=AgencyName)) +
 * It looks like we've got some good variation that we can look at with this data. Let's also take a look at amount of stops conducted by Agency.
 
 
-```{r}
+```{r, warning=FALSE}
 
 ggplot(clean, aes(x=VehicleSearchConducted)) +
   geom_histogram(stat="count") + facet_wrap(~AgencyName) +
